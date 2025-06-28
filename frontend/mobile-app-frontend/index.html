@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Mobile View</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/aws-amplify@latest/dist/aws-amplify.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>My Smart Home Devices</h1>
+
+        <div id="auth-section" class="section auth-section">
+            <div id="login-form">
+                <h2>Login</h2>
+                <input type="text" id="login-username" placeholder="Username (Email)">
+                <input type="password" id="login-password" placeholder="Password">
+                <button id="login-btn">Login</button>
+                <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+            </div>
+
+            <div id="signup-form" style="display: none;">
+                <h2>Sign Up</h2>
+                <input type="text" id="signup-username" placeholder="Username (Email)">
+                <input type="password" id="signup-password" placeholder="Password">
+                <input type="password" id="signup-password-confirm" placeholder="Confirm Password">
+                <button id="signup-btn">Sign Up</button>
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+            </div>
+
+            <div id="confirm-signup-form" style="display: none;">
+                <h2>Confirm Account</h2>
+                <p>A verification code has been sent to your email.</p>
+                <input type="text" id="confirm-username" placeholder="Username (Email)">
+                <input type="text" id="confirm-code" placeholder="Verification Code">
+                <button id="confirm-signup-btn">Confirm Account</button>
+                <button id="resend-code-btn">Resend Code</button>
+            </div>
+        </div>
+
+        <div id="app-section" style="display: none;">
+            <div class="header-actions">
+                <span id="welcome-message"></span>
+                <button id="logout-btn">Logout</button>
+            </div>
+
+            <div class="section">
+                <h2>Current Status</h2>
+                <button id="refresh-devices-btn">Refresh Status</button>
+                <div class="device-list" id="device-list">
+                    <p>Loading devices...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
