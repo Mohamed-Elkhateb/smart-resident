@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Admin Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/aws-amplify@latest/dist/aws-amplify.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Smart Home Device Administration</h1>
+
+        <div id="auth-section" class="section auth-section">
+            <div id="login-form">
+                <h2>Login</h2>
+                <input type="text" id="login-username" placeholder="Username (Email)">
+                <input type="password" id="login-password" placeholder="Password">
+                <button id="login-btn">Login</button>
+                <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+            </div>
+
+            <div id="signup-form" style="display: none;">
+                <h2>Sign Up</h2>
+                <input type="text" id="signup-username" placeholder="Username (Email)">
+                <input type="password" id="signup-password" placeholder="Password">
+                <input type="password" id="signup-password-confirm" placeholder="Confirm Password">
+                <button id="signup-btn">Sign Up</button>
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+            </div>
+
+            <div id="confirm-signup-form" style="display: none;">
+                <h2>Confirm Account</h2>
+                <p>A verification code has been sent to your email.</p>
+                <input type="text" id="confirm-username" placeholder="Username (Email)">
+                <input type="text" id="confirm-code" placeholder="Verification Code">
+                <button id="confirm-signup-btn">Confirm Account</button>
+                <button id="resend-code-btn">Resend Code</button>
+            </div>
+        </div>
+
+        <div id="app-section" style="display: none;">
+            <div class="header-actions">
+                <span id="welcome-message"></span>
+                <button id="logout-btn">Logout</button>
+            </div>
+
+            <div class="section">
+                <h2>Add New Device</h2>
+                <input type="text" id="add-device-id" placeholder="Device ID (optional)">
+                <input type="text" id="add-device-name" placeholder="Name" required>
+                <input type="text" id="add-device-type" placeholder="Type (e.g., Light, Thermostat)" required>
+                <input type="text" id="add-device-location" placeholder="Location (optional)">
+                <input type="text" id="add-device-status" placeholder="Initial Status (e.g., Off, 22C)" required>
+                <textarea id="add-device-properties" placeholder="Properties (optional, JSON format: {'brightness': 50})"></textarea>
+                <button id="add-device-btn">Add Device</button>
+            </div>
+
+            <div class="section">
+                <h2>Manage Existing Devices</h2>
+                <button id="refresh-devices-btn">Refresh Device List</button>
+                <div class="device-list" id="device-list">
+                    <p>Loading devices...</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Update Device Status</h2>
+                <input type="text" id="update-device-id" placeholder="Device ID to Update">
+                <input type="text" id="update-device-status" placeholder="New Status">
+                <button id="update-device-btn">Update Status</button>
+            </div>
+
+            <div class="section">
+                <h2>Delete Device</h2>
+                <input type="text" id="delete-device-id" placeholder="Device ID to Delete">
+                <button id="delete-device-btn">Delete Device</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
