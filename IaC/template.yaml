@@ -1,0 +1,169 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  smart-home-device-api
+
+  Serverless API for managing Smart Home Device inventory and status.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 128
+    Runtime: python3.9
+    Environment:
+      Variables:
+        DYNAMODB_TABLE_NAME: !Ref SmartHomeDevicesTable
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+    Auth:
+      DefaultAuthorizer: CognitoAuthorizer
+      Authorizers:
+        CognitoAuthorizer:
+          UserPoolArn: !GetAtt SmartHomeCognitoUserPool.Arn
+
+Resources:
+  # Cognito User Pool
+  SmartHomeCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: SmartHomeUserPool
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+
+  SmartHomeCognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref SmartHomeCognitoUserPool
+      ClientName: SmartHomeClient
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - USER_PASSWORD_AUTH
+
+  # DynamoDB Table
+  SmartHomeDevicesTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: SmartHomeDevices
+      PrimaryKey:
+        Name: deviceId
+        Type: String
+      BillingMode: PAY_PER_REQUEST
+
+  # Lambda Functions
+  CreateDeviceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: ../lambda-functions/create-device/
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SmartHomeDevicesTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /devices
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  GetDeviceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: ../lambda-functions/get-device/
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SmartHomeDevicesTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /devices/{deviceId}
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  GetAllDevicesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: ../lambda-functions/get-all-devices/
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SmartHomeDevicesTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /devices
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  UpdateDeviceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: ../lambda-functions/update-device/
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SmartHomeDevicesTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /devices/{deviceId}
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  DeleteDeviceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: ../lambda-functions/delete-device/
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SmartHomeDevicesTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /devices/{deviceId}
+            Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+Outputs:
+  SmartHomeApiUrl:
+    Description: "API Gateway Invoke URL for Smart Home Device API"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage"
+  
+  CognitoUserPoolId:
+    Description: "Cognito User Pool ID for authentication"
+    Value: !Ref SmartHomeCognitoUserPool
+  
+  CognitoUserPoolClientId:
+    Description: "Cognito User Pool Client ID for authentication"
+    Value: !Ref SmartHomeCognitoUserPoolClient
+
+  
