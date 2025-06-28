@@ -24,7 +24,7 @@ This answer enables users to manage their smart home device data on their own, i
 
 The core of this solution is a serverless REST API, providing a stateless and highly scalable backend for smart home device management. User requests from either the administration portal or mobile application frontend are routed through Amazon API Gateway. API Gateway acts as the "front door," handling request routing, authentication, and authorization. These requests then trigger specific AWS Lambda functions, which contain the business logic for performing CRUD operations on device data. All device-related information is persistently stored in Amazon DynamoDB, a fully managed NoSQL database designed for high performance at any scale. AWS IAM ensures secure access control across all components, while Amazon CloudWatch provides comprehensive logging and monitoring capabilities for operational insights. The frontends (administration portal and mobile application) are static web applications hosted securely on Amazon S3.
 
-![Solution Architecture Diagram](Solution-Diagram3.png)
+![Solution Architecture Diagram](Solution-Diagram4.png)
 
 ## Key AWS Services Used
 
